@@ -24,11 +24,11 @@ class WxPayConfig
      * @var string
      */
     //APP端
-    const APPID = 'wxfdfe58b8cf90f9be';
-    const MCHID = '1263852601';
+    const APPID = 'xxxxx';
+    const MCHID = 'xxxxx';
 
-    const KEY = '1WHrvIsi7EnzT7ukDC1wlTBGrj68E61W';
-    const APPSECRET = '34cc08c2682d7a2e996ec92603619aa5';
+    const KEY = 'xxxxxx';
+    const APPSECRET = 'xxxxx';
 
     //=======【证书路径设置】=====================================
     /**
@@ -60,6 +60,5 @@ class WxPayConfig
      */
     const REPORT_LEVENL = 1;
     //通知回调地址
-    //const NOTIFY_URL = "http://bangwosong.kollway.com/Wechatpay/notify";
-    const NOTIFY_URL = "http://app.bangwosong.com/Wechatpay/notify";
+    const NOTIFY_URL = "xxxxxx";
 }
