@@ -1,1 +1,1 @@
-# wechat-pay
+# laravel wechat-pay

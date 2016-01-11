@@ -1,0 +1,20 @@
+{
+    "name": "kollway/wechat-pay",
+    "description": "Laravel Wechat payment library.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "kollway",
+            "email": "app@kollway.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Kollway\\WechatPay\\": "src/Kollway/WechatPay"
+        }
+    }
+}
