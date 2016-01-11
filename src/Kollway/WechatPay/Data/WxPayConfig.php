@@ -23,13 +23,18 @@ class WxPayConfig
      * 获取地址：https://mp.weixin.qq.com/advanced/advanced?action=dev&t=advanced/dev&token=2005451881&lang=zh_CN
      * @var string
      */
-    //APP端
-    const APPID = 'xxxxx';
-    const MCHID = 'xxxxx';
-
-    const KEY = 'xxxxxx';
-    const APPSECRET = 'xxxxx';
-
+    public static function getAppId() {
+        return env('APPID');
+    }
+    public static function getMchID() {
+        return env('MCHID');
+    }
+    public static function getKey() {
+        return env('KEY');
+    }
+    public static function getAppSecRet() {
+        return env('APPSECRET');
+    }
     //=======【证书路径设置】=====================================
     /**
      * TODO：设置商户证书路径
@@ -37,8 +42,12 @@ class WxPayConfig
      * API证书下载地址：https://pay.weixin.qq.com/index.php/account/api_cert，下载之前需要安装商户操作证书）
      * @var path
      */
-    const SSLCERT_PATH = '../cert/apiclient_cert.pem';
-    const SSLKEY_PATH = '../cert/apiclient_key.pem';
+    public static function getSslCertPath() {
+        return env('SSLCERT_PATH');
+    }
+    public static function getSslKeyPath() {
+        return env('SSLKEY_PATH');
+    }
 
     //=======【curl代理设置】===================================
     /**
@@ -60,5 +69,7 @@ class WxPayConfig
      */
     const REPORT_LEVENL = 1;
     //通知回调地址
-    const NOTIFY_URL = "xxxxxx";
+    public static function getNotifyUrl() {
+        return env('NOTIFY_URL');
+    }
 }

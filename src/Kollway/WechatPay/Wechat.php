@@ -51,9 +51,9 @@ class Wechat
      */
     public function __construct()
     {
-        $this->appId = WxPayConfig::APPID;
-        $this->mchId = WxPayConfig::MCHID;
-        $this->key = WxPayConfig::KEY;
+        $this->appId = WxPayConfig::getAppId();
+        $this->mchId = WxPayConfig::getMchID();
+        $this->key = WxPayConfig::getKey();
     }
 
     /**
@@ -156,12 +156,12 @@ class Wechat
 
         //异步通知url未设置，则使用配置文件中的url
         if(!$inputObj->IsNotify_urlSet()){
-            $inputObj->SetNotify_url(WxPayConfig::NOTIFY_URL);//异步通知url
+            $inputObj->SetNotify_url(WxPayConfig::getNotifyUrl());//异步通知url
         }
 
-        $inputObj->SetAppid(WxPayConfig::APPID);//公众账号ID
+        $inputObj->SetAppid(WxPayConfig::getAppId());//公众账号ID
         if(!$inputObj->IsMch_idSet()){
-            $inputObj->SetMch_id(WxPayConfig::MCHID);//商户号
+            $inputObj->SetMch_id(WxPayConfig::getMchID());//商户号
         }
         $inputObj->SetSpbill_create_ip($_SERVER['REMOTE_ADDR']);//终端ip
         //$inputObj->SetSpbill_create_ip("1.1.1.1");
@@ -276,8 +276,8 @@ class Wechat
     } if(!$inputObj->IsExecute_time_Set()) {
         throw new WechatPayException("接口耗时，缺少必填参数execute_time_！");
     }
-        $inputObj->SetAppid(WxPayConfig::APPID);//公众账号ID
-        $inputObj->SetMch_id(WxPayConfig::MCHID);//商户号
+        $inputObj->SetAppid(WxPayConfig::getAppId());//公众账号ID
+        $inputObj->SetMch_id(WxPayConfig::getMchID());//商户号
         $inputObj->SetUser_ip($_SERVER['REMOTE_ADDR']);//终端ip
         $inputObj->SetTime(date("YmdHis"));//商户上报时间
         $inputObj->SetNonce_str(self::getNonceStr());//随机字符串
