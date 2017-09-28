@@ -39,7 +39,7 @@ class WxPayDataBase
 
     /**
      * 输出xml字符
-     * @throws WxPayException
+     * @throws WechatPayException
      **/
     public function ToXml()
     {
@@ -65,7 +65,7 @@ class WxPayDataBase
     /**
      * 将xml转为array
      * @param string $xml
-     * @throws WxPayException
+     * @throws WechatPayException
      */
     public function FromXml($xml)
     {

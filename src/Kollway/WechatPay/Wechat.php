@@ -207,7 +207,7 @@ class Wechat
      * appid、mchid、spbill_create_ip、nonce_str不需要填入
      * @param WxPayUnifiedOrder $inputObj
      * @param int $timeOut
-     * @throws WxPayException
+     * @throws WechatPayException
      * @return 成功时返回，其他抛异常
      */
     public function unifiedOrder($inputObj, $timeOut = 6)
@@ -349,7 +349,7 @@ class Wechat
      * appid、mchid、spbill_create_ip、nonce_str不需要填入
      * @param WxPayReport $inputObj
      * @param int $timeOut
-     * @throws WxPayException
+     * @throws WechatPayException
      * @return 成功时返回，其他抛异常
      */
     private static function report($inputObj, $timeOut = 1)

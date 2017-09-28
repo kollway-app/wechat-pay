@@ -6,6 +6,8 @@ namespace Kollway\WechatPay;
 use Kollway\WechatPay\Data\WxPayConfig;
 use Kollway\WechatPay\Exception\HttpException;
 use Kollway\WechatPay\Data\WxPayDataBase;
+use Kollway\WechatPay\Exception\WechatPayException;
+
 class CurlHttpClient implements HttpClientInterface
 {
 
@@ -52,7 +54,7 @@ class CurlHttpClient implements HttpClientInterface
      * @param string $url  url
      * @param bool $useCert 是否需要证书，默认不需要
      * @param int $second   url执行超时时间，默认30s
-     * @throws WxPayException
+     * @throws WechatPayException
      */
     public function executeXmlCurl(WxPayDataBase $payDataBase,$url,$method = self::METHOD_POST, $useCert = false, $second = 30)
     {
@@ -95,7 +97,7 @@ class CurlHttpClient implements HttpClientInterface
         } else {
             $error = curl_errno($ch);
             curl_close($ch);
-            throw new WxPayException("curl出错，错误码:$error");
+            throw new WechatPayException("curl出错，错误码:$error");
         }
     }
     /**

@@ -63,7 +63,7 @@ class WxPayResults extends  WxPayDataBase {
     /**
      * 将xml转为array
      * @param string $xml
-     * @throws WxPayException
+     * @throws WechatPayException
      */
     public static function Init($xml)
     {
