@@ -6,6 +6,34 @@
 namespace Kollway\WechatPay\Data;
 class WxPayConfig
 {
+    private static $config;
+    private static $multi_config_array;
+
+    public static function setConfig($app_id, $mchid, $api_token) {
+        self::$config = array(
+            'app_id' => $app_id,
+            'mchid' => $mchid,
+            'api_token' => $api_token,
+        );
+    }
+
+    public static function setMultiConfigArray($config_array) {
+        $multi_config_array = [];
+        if(is_array($config_array)) {
+            foreach ($config_array as $config) {
+                if(isset($config['app_id'], $config['mchid'], $config['api_token'])) {
+                    $multi_config_array[] = $config;
+                }
+            }
+        }
+
+        self::$multi_config_array = $multi_config_array;
+    }
+
+    public static function getMultiConfigArray() {
+        return self::$multi_config_array;
+    }
+
     //=======【基本信息设置】=====================================
     //
     /**
@@ -24,15 +52,27 @@ class WxPayConfig
      * @var string
      */
     public static function getAppId() {
+        $config = self::$config;
+        if($config && isset($config['app_id'])) {
+            return $config['app_id'];
+        }
+
         return env('APPID');
     }
     public static function getMchID() {
+        $config = self::$config;
+        if($config && isset($config['mchid'])) {
+            return $config['mchid'];
+        }
+
         return env('MCHID');
     }
     public static function getKey() {
-        return env('KEY');
-    }
-    public static function getAppSecRet() {
+        $config = self::$config;
+        if($config && isset($config['api_token'])) {
+            return $config['api_token'];
+        }
+
         return env('APPSECRET');
     }
     //=======【证书路径设置】=====================================

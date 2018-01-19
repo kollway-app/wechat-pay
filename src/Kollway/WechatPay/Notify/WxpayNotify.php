@@ -1,6 +1,7 @@
 <?php
 namespace Kollway\WechatPay\Notify;
 
+use Kollway\WechatPay\Data\WxPayConfig;
 use Kollway\WechatPay\Data\WxPayResults;
 use Kollway\WechatPay\Exception\WechatPayException;
 use Kollway\WechatPay\Notify\WxPayNotifyReply;
@@ -108,11 +109,34 @@ class WxPayNotify extends WxPayNotifyReply
         //$GLOBALS 有些配置可能有限制
         //$xml = $GLOBALS['HTTP_RAW_POST_DATA'];
         $xml = file_get_contents("php://input");
-        //如果返回成功则验证签名
-        try {
-            $result = WxPayResults::Init($xml);
-        } catch (WechatPayException $e){
-            $msg = $e->errorMessage();
+
+        $multi_config_array = WxPayConfig::getMultiConfigArray();
+        if(!$multi_config_array) {
+            $default_config = array(
+                'app_id' => WxPayConfig::getAppId(),
+                'mchid' => WxPayConfig::getMchID(),
+                'api_token' => WxPayConfig::getKey(),
+            );
+            $multi_config_array = array($default_config);
+        }
+
+        $verify_success = false;
+        foreach ($multi_config_array as $config) {
+            WxPayConfig::setConfig($config['app_id'], $config['mchid'], $config['api_token']);
+            //如果返回成功则验证签名
+            try {
+                $result = WxPayResults::Init($xml);
+                if($result) {
+                    $verify_success = true;
+                    break ;
+                }
+            } catch (WechatPayException $e){
+                $msg = $e->errorMessage();
+                $verify_success = false;
+            }
+        }
+
+        if(!$verify_success) {
             return false;
         }
 
