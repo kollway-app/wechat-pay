@@ -185,8 +185,6 @@ class Wechat
             throw new WechatPayException("退款申请接口中，缺少必填参数total_fee！");
         }else if(!$inputObj->IsRefund_feeSet()){
             throw new WechatPayException("退款申请接口中，缺少必填参数refund_fee！");
-        }else if(!$inputObj->IsOp_user_idSet()){
-            throw new WechatPayException("退款申请接口中，缺少必填参数op_user_id！");
         }
         $inputObj->SetAppid($this->appId);//公众账号ID
         $inputObj->SetMch_id($this->mchId);//商户号

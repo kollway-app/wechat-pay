@@ -481,35 +481,4 @@ class WxPayUnifiedOrder extends WxPayDataBase
     {
         return array_key_exists('openid', $this->values);
     }
-
-    /** 设置子商户公众账号ID（服务商模式下使用）
-     * @param $sub_appid
-     */
-    public function SetSubAppId($sub_appid) {
-        $this->values['sub_appid'] = $sub_appid;
-    }
-
-    public function GetSubAppId() {
-        return $this->values['sub_appid'];
-    }
-
-    public function IsSubAppIdSet() {
-        return array_key_exists('sub_appid', $this->values);
-    }
-
-    /** 设置子商户号（服务商模式下使用）
-     * @param $sub_mch_id
-     */
-    public function SetSubMchId($sub_mch_id) {
-        $this->values['sub_mch_id'] = $sub_mch_id;
-    }
-
-    public function GetSubMchId() {
-        return $this->values['sub_mch_id'];
-    }
-
-    public function IsSubMchIdSet() {
-        return array_key_exists('sub_mch_id', $this->values);
-    }
-
 }
