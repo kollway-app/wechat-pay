@@ -242,7 +242,6 @@ class Wechat
             $inputObj->SetMch_id(WxPayConfig::getMchID());//商户号
         }
         $inputObj->SetSpbill_create_ip($_SERVER['REMOTE_ADDR']);//终端ip
-        //$inputObj->SetSpbill_create_ip("1.1.1.1");
         $inputObj->SetNonce_str(self::getNonceStr());//随机字符串
         //签名
         $inputObj->SetSign();
@@ -395,4 +394,44 @@ class Wechat
         }
         return $str;
     }
+
+    /**
+     * 提交被扫支付API（发起刷卡支付API）
+     * 收银员使用扫码设备读取微信用户刷卡授权码以后，二维码或条码信息传送至商户收银台，
+     * 由商户收银台或者商户后台调用该接口发起支付。
+     * WxPayWxPayMicroPay中body、out_trade_no、total_fee、auth_code参数必填
+     * appid、mchid、spbill_create_ip、nonce_str不需要填入
+     * @param WxPayMicroPay $inputObj
+     * @param int $timeOut
+     * @throws WechatPayException
+     */
+    public function micropay($inputObj, $timeOut = 6) {
+        $url = "https://api.mch.weixin.qq.com/pay/micropay";
+        //检测必填参数
+        if(!$inputObj->IsBodySet()) {
+            throw new WechatPayException("提交被扫支付API接口中，缺少必填参数body！");
+        } else if(!$inputObj->IsOut_trade_noSet()) {
+            throw new WechatPayException("提交被扫支付API接口中，缺少必填参数out_trade_no！");
+        } else if(!$inputObj->IsTotal_feeSet()) {
+            throw new WechatPayException("提交被扫支付API接口中，缺少必填参数total_fee！");
+        } else if(!$inputObj->IsAuth_codeSet()) {
+            throw new WechatPayException("提交被扫支付API接口中，缺少必填参数auth_code！");
+        }
+
+        $inputObj->SetAppid(WxPayConfig::getAppId());//公众账号ID
+        if(!$inputObj->IsMch_idSet()){
+            $inputObj->SetMch_id(WxPayConfig::getMchID());//商户号
+        }
+        $inputObj->SetSpbill_create_ip($_SERVER['REMOTE_ADDR']);//终端ip
+        $inputObj->SetNonce_str(self::getNonceStr());//随机字符串
+
+        $inputObj->SetSign();//签名
+        $response = $this->getHttpClient()->executeXmlCurl($inputObj,$url);
+        $startTimeStamp = self::getMillisecond();//请求开始时间
+        $result = WxPayResults::Init($response);
+        self::reportCostTime($url, $startTimeStamp, $result);//上报请求花费时间
+
+        return $result;
+    }
+
 }
