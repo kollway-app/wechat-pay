@@ -3,13 +3,14 @@
 namespace Kollway\WechatPay;
 
 
+use Kollway\WechatPay\Data\WxPayCloseOrder;
+use Kollway\WechatPay\Data\WxPayConfig;
+use Kollway\WechatPay\Data\WxPayOrderQuery;
+use Kollway\WechatPay\Data\WxPayRefund;
 use Kollway\WechatPay\Data\WxPayReport;
 use Kollway\WechatPay\Data\WxPayResults;
 use Kollway\WechatPay\Exception\WechatPayException;
-use Kollway\WechatPay\Data\WxPayConfig;
-use Kollway\WechatPay\Data\WxPayOrderQuery;
-use Kollway\WechatPay\Data\WxPayCloseOrder;
-use Kollway\WechatPay\Data\WxPayRefund;
+
 class Wechat
 {
 
@@ -34,6 +35,9 @@ class Wechat
      */
     protected $key;
 
+    //是否启用沙盒测试（仅部分API可用）
+    protected $is_sandbox;
+
     /**
      * The http client to send http request.
      *
@@ -56,6 +60,7 @@ class Wechat
         $this->appId = WxPayConfig::getAppId();
         $this->mchId = WxPayConfig::getMchID();
         $this->key = WxPayConfig::getKey();
+        $this->is_sandbox = false;
     }
 
     /**
@@ -76,6 +81,10 @@ class Wechat
     public function getMchId()
     {
         return $this->mchId;
+    }
+
+    public function setIsSandBox($is_sandbox) {
+        $this->is_sandbox = $is_sandbox;
     }
 
     /**
@@ -117,6 +126,12 @@ class Wechat
         if(!$inputObj->IsOut_trade_noSet() && !$inputObj->IsTransaction_idSet()) {
             throw new WechatPayException("订单查询接口中，out_trade_no、transaction_id至少填一个！");
         }
+
+        if($this->is_sandbox) {
+            $url = "https://api.mch.weixin.qq.com/sandboxnew/pay/orderquery";
+            $this->setupSandboxEnv();
+        }
+
         if(!$inputObj->IsAppidSet()){
             $inputObj->SetAppid($this->appId);//公众账号ID
         }
@@ -405,6 +420,7 @@ class Wechat
      */
     public function micropay($inputObj, $timeOut = 6) {
         $url = "https://api.mch.weixin.qq.com/pay/micropay";
+
         //检测必填参数
         if(!$inputObj->IsBodySet()) {
             throw new WechatPayException("提交被扫支付API接口中，缺少必填参数body！");
@@ -414,6 +430,11 @@ class Wechat
             throw new WechatPayException("提交被扫支付API接口中，缺少必填参数total_fee！");
         } else if(!$inputObj->IsAuth_codeSet()) {
             throw new WechatPayException("提交被扫支付API接口中，缺少必填参数auth_code！");
+        }
+
+        if($this->is_sandbox) {
+            $url = "https://api.mch.weixin.qq.com/sandboxnew/pay/micropay";
+            $this->setupSandboxEnv();
         }
 
         $inputObj->SetAppid(WxPayConfig::getAppId());//公众账号ID
@@ -432,4 +453,21 @@ class Wechat
         return $result;
     }
 
+    private function setupSandboxEnv() {
+        $url = 'https://api.mch.weixin.qq.com/sandboxnew/pay/getsignkey';
+        $param = new WxPayUnifiedOrder();
+        $param->SetMch_id(WxPayConfig::getMchID());//商户号
+        $param->SetNonce_str(self::getNonceStr());//随机字符串
+        $param->SetSign();//签名
+        $response = $this->getHttpClient()->executeXmlCurl($param,$url);
+        if($response) {
+            $wxpay_results = new WxPayResults();
+            $wxpay_results->FromXml($response);
+            $result = $wxpay_results->GetValues();
+            if($result && isset($result['sandbox_signkey']) && $result['sandbox_signkey']) {
+                $sandbox_signkey = $result['sandbox_signkey'];
+                WxPayConfig::setConfig(WxPayConfig::getAppId(), WxPayConfig::getMchID(), $sandbox_signkey);
+            }
+        }
+    }
 }
