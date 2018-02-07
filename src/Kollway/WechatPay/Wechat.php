@@ -117,10 +117,10 @@ class Wechat
         if(!$inputObj->IsOut_trade_noSet() && !$inputObj->IsTransaction_idSet()) {
             throw new WechatPayException("订单查询接口中，out_trade_no、transaction_id至少填一个！");
         }
-        if(!$inputObj->GetAppid()){
+        if(!$inputObj->IsAppidSet()){
             $inputObj->SetAppid($this->appId);//公众账号ID
         }
-        if(!$inputObj->GetMch_id()){
+        if(!$inputObj->IsMch_idSet()){
             $inputObj->SetMch_id($this->mchId);//商户号
         }
         $inputObj->SetNonce_str(self::getNonceStr());//随机字符串
