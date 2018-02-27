@@ -453,6 +453,31 @@ class Wechat
         return $result;
     }
 
+    /**
+     * @param $unified_order_result
+     * @return array
+     * @throws WechatPayException
+     */
+    public function getJsApiPayParametersFromUnifiedOrderResult($unified_order_result) {
+        if(!array_key_exists("appid", $unified_order_result)
+            || !array_key_exists("prepay_id", $unified_order_result)
+            || $unified_order_result['prepay_id'] == "")
+        {
+            throw new WechatPayException("参数错误");
+        }
+
+        $jsapi = new WxPayJsApiPay();
+        $jsapi->SetAppid($unified_order_result["appid"]);
+        $timeStamp = time();
+        $jsapi->SetTimeStamp("$timeStamp");
+        $jsapi->SetNonceStr(self::getNonceStr());
+        $jsapi->SetPackage("prepay_id=" . $unified_order_result['prepay_id']);
+        $jsapi->SetSignType("MD5");
+        $jsapi->SetPaySign($jsapi->MakeSign());
+        $parameters = $jsapi->GetValues();
+        return $parameters;
+    }
+
     private function setupSandboxEnv() {
         $url = 'https://api.mch.weixin.qq.com/sandboxnew/pay/getsignkey';
         $param = new WxPayUnifiedOrder();
