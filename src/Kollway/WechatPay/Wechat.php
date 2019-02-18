@@ -254,7 +254,7 @@ class Wechat
         if(!$inputObj->IsMch_idSet()){
             $inputObj->SetMch_id(WxPayConfig::getMchID());//商户号
         }
-        $inputObj->SetSpbill_create_ip($_SERVER['REMOTE_ADDR']);//终端ip
+        $inputObj->SetSpbill_create_ip(self::getClientIp());//终端ip
         $inputObj->SetNonce_str(self::getNonceStr());//随机字符串
         //签名
         $inputObj->SetSign();
@@ -381,7 +381,7 @@ class Wechat
     }
         $inputObj->SetAppid(WxPayConfig::getAppId());//公众账号ID
         $inputObj->SetMch_id(WxPayConfig::getMchID());//商户号
-        $inputObj->SetUser_ip($_SERVER['REMOTE_ADDR']);//终端ip
+        $inputObj->SetUser_ip(self::getClientIp());//终端ip
         $inputObj->SetTime(date("YmdHis"));//商户上报时间
         $inputObj->SetNonce_str(self::getNonceStr());//随机字符串
 
@@ -406,6 +406,22 @@ class Wechat
             $str .= substr($chars, mt_rand(0, strlen($chars)-1), 1);
         }
         return $str;
+    }
+
+    public static function getClientIp() {
+        $ip = '';
+        if(isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+            $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+        }
+        else if(isset($_SERVER['HTTP_CLIENT_IP'])) {
+            $ip = $_SERVER['HTTP_CLIENT_IP'];
+        }
+        else {
+            $ip = $_SERVER['REMOTE_ADDR'];
+        }
+
+        $ip_arr = explode(',', $ip);
+        return isset($ip_arr[0]) ? $ip_arr[0] : '';
     }
 
     /**
@@ -441,7 +457,7 @@ class Wechat
         if(!$inputObj->IsMch_idSet()){
             $inputObj->SetMch_id(WxPayConfig::getMchID());//商户号
         }
-        $inputObj->SetSpbill_create_ip($_SERVER['REMOTE_ADDR']);//终端ip
+        $inputObj->SetSpbill_create_ip(self::getClientIp());//终端ip
         $inputObj->SetNonce_str(self::getNonceStr());//随机字符串
 
         $inputObj->SetSign();//签名
